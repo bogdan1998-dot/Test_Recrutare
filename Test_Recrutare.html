@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+
+
+<style>
+p{display:none;}
+
+
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+var cutiax,aiciSuntCulori,aiciSuntCatebile,formMare,primaCul,adouaCul;
+var colors=["red","orange","yellow","purple","blue","magenta","green","pink","white","grey"];
+var bc=colors;
+var i=parseInt("0"),sum=parseInt("0"),diff=parseInt("0");var err=false;
+var id="",id2="";
+var gramada=[];
+var gc=[];
+var r,nr,mic=parseInt("101"),contor=parseInt("0");
+
+
+$(document).ready(function(){
+$("#altid").click(function()
+{
+
+nr=$("#nrculori").val();
+
+if(isNaN(nr))
+{
+alert("Input must be a number!");
+reset();
+}
+
+if(nr>10 || nr<1)
+{
+alert("values betwee 1-10");
+reset();
+}
+nr=parseInt($("#nrculori").val());
+
+
+creeazaForm();
+saVedemCutiile();
+gen_colors();
+});
+});
+
+function creeazaForm()
+{
+formMare=document.createElement("FORM");
+for(let k=0;k<nr;k++)
+{
+aiciSuntCulori=document.createElement("P");
+aiciSuntCulori.id="c"+k;
+aiciSuntCatebile=document.createElement("INPUT");
+aiciSuntCatebile.type="text";
+aiciSuntCatebile.id="d"+k;
+aiciSuntCatebile.name="d"+k;
+
+formMare.appendChild(aiciSuntCulori);
+aiciSuntCulori.appendChild(aiciSuntCatebile);
+document.body.appendChild(formMare);
+
+}
+}
+
+function saVedemCutiile()
+{
+
+for(let k=0;k<nr;k++)
+{
+cutiax=document.createElement("P");
+cutiax.id="cutie"+k;
+cutiax.innerHTML="Box"+(k+1)+":";
+primaCul=document.createElement("Input");
+primaCul.type="text";primaCul.id="b"+k;
+primaCul.readonly="readonly";
+cutiax.appendChild(primaCul);
+adouaCul=document.createElement("Input");
+adouaCul.type="text";adouaCul.id="b0"+k;
+adouaCul.value="0";
+adouaCul.readonly="readonly";
+cutiax.appendChild(adouaCul);
+document.body.appendChild(cutiax);
+}
+
+}
+
+
+
+function gen_colors()
+{
+while(nr)
+{
+r = Math.floor(Math.random()*bc.length);
+gc[i]=bc[r];
+bc.splice(r,1);
+i++;nr--;
+}
+
+$("#demo").css("display","block");i=parseInt("0");nr=parseInt($("#nrculori").val());
+$("#nrculori").attr("readonly","readonly");
+$("#altid").css("display","none");
+}
+
+$(document).ready(function(){$("#g").click(function()
+{
+
+$("#demo2").text("generated colors:"+gc);
+$("#demo2").css("display","block");
+$("#altid").css("display","none");
+$("#demo").css("display","none");
+
+
+
+for(let k=0;k<gc.length;k++){id="#c"+k;$(id).css("display","block");}
+for(let k=0;k<gc.length;k++){id="#d"+k;$(id).css("background",gc[k]);}
+$("#v").css("display","block");
+
+});});
+
+
+
+$(document).ready(function(){
+$("#altid2").click(function()
+{
+for(let k=0;k<gc.length;k++)
+{
+id="#d"+k;
+if($(id).val()=="" || $(id).val()==0)
+{
+alert("Field cannot be empty or 0");
+err=true;
+break;
+}
+console.log("typ="+typeof($(id).val()))
+sum+=parseInt($(id).val());
+}
+if(err)reset();
+
+if(sum!=nr*nr){alert("Number of balls must be number of colors squared!Now application will reset!");reset();}
+
+for(let t=0;t<gc.length;t++)
+{id="#d"+t;
+gramada[t]=parseInt($(id).val());
+}
+
+
+
+//aici algorithm
+
+
+
+$("#altid2").css("display","none");
+
+while(sum)
+{
+mic=101;diff=0;contor=0;
+id="#b"+i;id2="#b0"+i;
+
+for(let k=0;k<gramada.length;k++)
+ if(gramada[k]<mic && gramada[k] && gramada[k]>=diff)mic=gramada[k];
+
+for(let k=0;k<gramada.length;k++)
+{
+if(gramada[k]==mic)break;
+else contor++;
+}
+
+if(mic>nr)
+{
+$(id).css("display","block");
+$(id).css("background",gc[contor]);
+$(id).val(nr);$(id).attr("readonly","readonly");
+diff=0;gramada[contor]-=$(id).val();
+sum-=$(id).val();contor=0;mic=101;
+
+}
+else if(mic==nr)
+{
+$(id).css("display","block");
+$(id).css("background",gc[contor]);
+$(id).val(mic);$(id).attr("readonly","readonly");
+diff=0;gramada[contor]-=mic;
+sum-=mic;contor=0;mic=101;
+}
+else
+{
+$(id).css("display","block");
+$(id).css("background",gc[contor]);
+$(id).val(mic);$(id).attr("readonly","readonly");
+diff=nr-mic;gramada[contor]-=mic;
+sum-=mic;contor=0;mic=101;
+}
+
+
+for(let k=0;k<gramada.length;k++)
+ if(gramada[k]<mic && gramada[k] && gramada[k]>=diff)mic=gramada[k];
+
+for(let k=0;k<gramada.length;k++)
+{
+if(gramada[k]==mic)break;
+else contor++;
+}
+
+
+
+$(id2).css("display","block");
+$(id2).css("background",gc[contor]);
+$(id2).val(diff);
+if($(id2).val()=="0")$(id2).css("display","none");
+$(id2).attr("readonly","readonly");
+gramada[contor]-=diff;sum-=diff;
+i++;
+
+}
+
+//sfarsit algorithm
+for(let t=0;t<nr;t++){id="#cutie"+t;$(id).css("display","block");}
+$("#reset").css("display","block");
+});});
+
+function reset()
+{
+location.reload();
+
+}
+
+
+</script>
+
+
+</head>
+<title>Test recrutare</title>
+<body>
+
+
+<label for="nrculori">nr culori</label>
+<form>
+<input type="text" id="nrculori" name="nrculori">
+<button type="button" id="altid">go</button>
+</form>
+
+
+<p id="demo"><button type="button" id="g">go</button></p>
+<p id="demo2"></p>
+
+
+<p id="v">
+<button type="button" id="altid2">Solution</button>
+</p>
+
+<p id="reset"><button type="submit" onclick="reset()">Reset</p>
+
+
+
+
+
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
